@@ -11,11 +11,11 @@ export default function Router () {
   return (
     <>
       <Routes>
-        <Route index path="/" element={HomeView} />
-        <Route path="/login" element={LoginView} />
-        <Route path="/register" element={RegisterView} />
-        <Route path="/forgot-password" element={ForgotPasswordView} />
-        <Route path="/dahsboard" element={DashboardView} />
+        <Route index path="/" element={<HomeView />} />
+        <Route path="/login" element={<LoginView/>} />
+        <Route path="/register" element={<RegisterView/>} />
+        <Route path="/forgot-password" element={<ForgotPasswordView/>} />
+        <Route path="/dahsboard" element={<DashboardView/>} />
       </Routes>
     </>
   )
