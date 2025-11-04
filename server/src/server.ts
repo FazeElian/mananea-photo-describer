@@ -11,7 +11,7 @@ import { db } from "./config/db";
 
 // Routers
 import authRouter from "./routes/authRouter";
-// import imageRouter from "./routes/imageRouter";
+import imageRouter from "./routes/imageRouter";
 
 async function connectDB () {
     try {
@@ -32,5 +32,6 @@ app.use(express.json())
 
 // Routers
 app.use("/api/auth/", authRouter);
+app.use("/api/", imageRouter);
 
 export default app

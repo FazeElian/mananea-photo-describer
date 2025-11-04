@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
+import { Toaster } from "sonner";
 
 const HomeView = lazy(() => import("./views/HomeView"))
 const DashboardView = lazy(() => import("./views/DashboardView"))
@@ -15,7 +16,7 @@ export default function Router () {
         <Route path="/login" element={<LoginView/>} />
         <Route path="/register" element={<RegisterView/>} />
         <Route path="/forgot-password" element={<ForgotPasswordView/>} />
-        <Route path="/dahsboard" element={<DashboardView/>} />
+        <Route path="/dashboard" element={<DashboardView/>} />
       </Routes>
     </>
   )

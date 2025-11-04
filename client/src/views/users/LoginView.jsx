@@ -1,54 +1,69 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Toaster } from "sonner";
 import "../../assets/css/login.css";
+import { useLoginMutation } from "../../modules/auth/mutations";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+
 
 const LoginView = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Simulación de cuenta ya registrada (puedes reemplazarlo por localStorage o backend)
-    const cuentaRegistrada = {
-      email: "usuario@ejemplo.com",
-      password: "1234",
-    };
-
-    // Validación
-    if (email === cuentaRegistrada.email && password === cuentaRegistrada.password) {
-      setError("");
-      alert("Inicio de sesión exitoso ✅");
-      navigate("/main"); // Redirige a la pantalla principal
-    } else {
-      setError("Correo o contraseña incorrectos ❌");
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    defaultValues: {
+      email: "",
+      userName: "",
+      password: ""
     }
-  };
+  });
+
+  // Mutation
+  const loginMutation = useLoginMutation()
+  const redirect = useNavigate()
+  const handleRegister = (formData) => {
+    loginMutation.mutate(formData, {
+      onSuccess: () => {
+        reset()
+        redirect("/dashboard")
+      }
+    });
+  }
 
   return (
     <div className="login-container">
-      <form className="login-form" onSubmit={handleSubmit}>
+      <form className="login-form" onSubmit={handleSubmit(handleRegister)}>
         <h2>Iniciar sesión</h2>
 
         <input
           type="email"
           placeholder="Correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
+          {...register("email", {
+            required: "El correo electrónico es obligatorio",
+            pattern: {
+              value: /\S+@\S+\.\S+/,
+              message: "Por favor, ingresa un correo electrónico válido"
+            }
+          })}
         />
+        {errors.email && 
+          <p style={{ color: "red" }}>
+            {errors.email?.message}
+          </p>
+        }
 
         <input
           type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          placeholder="Crea una contraseña (mínimo 8 caracteres)"
+          {...register("password", {
+            required: "Debes ingresar una contraseña.",
+            minLength: {
+                value: 8,
+                message: "La contraseña debe tener al menos 8 caracteres."
+            }
+          })}
         />
-
-        {error && <p className="error-message">{error}</p>}
+        {errors.password && 
+          <p style={{ color: "red" }}>
+            {errors.password?.message}
+          </p>
+        }
 
         <p>
           ¿Olvidaste tu contraseña?{" "}
@@ -56,7 +71,7 @@ const LoginView = () => {
         </p>
 
         <button type="submit" className="login-btn">
-          Ingresar
+          Iniciar Sesión
         </button>
 
         <p className="register-link">

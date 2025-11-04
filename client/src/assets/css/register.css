@@ -10,6 +10,7 @@
   
   /* Formulario */
   .register-form {
+    display: flex;
     background: #ffffff;
     border-radius: 20px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
@@ -21,6 +22,10 @@
     gap: 1rem;
   }
   
+    .register-form input {
+      max-width: 93.5%;
+    }
+
   /* Título */
   .register-form h2 {
     text-align: center;

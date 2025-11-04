@@ -1,49 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../assets/css/home.css";
-import logo from "../assets/img/logo.png"; // Asegúrate de mover tu imagen aquí
+import logo from "../assets/img/logo.png";
 
 const HomeView = () => {
-  const [image, setImage] = useState(null);
-  const [description, setDescription] = useState("");
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(URL.createObjectURL(file));
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const res = await fetch(`http://localhost:4000/api/images`); // tu ruta del backend
+        if (!res.ok) throw new Error("Error al obtener imágenes");
 
-      // Aquí iría la llamada a la IA (por ahora, simulamos una respuesta)
-      setDescription("Esta parece ser una imagen con un objeto aún por identificar...");
-    }
-  };
+        const data = await res.json();
+        setImages(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchImages();
+  }, []);
+
+  if (loading) return <p>Cargando imágenes...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="home-container">
-      <nav className="navbar">
-        <img src={logo} alt="AI Visual Analyzer" className="logo" />
-        <button
-          className="logout-btn"
-          onClick={() => (window.location.href = "/login")}
-        >
-          Cerrar sesión
-        </button>
-      </nav>
-
-      <main className="content">
-        <h2>Sube una imagen para analizarla</h2>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="upload-input"
-        />
-
-        {image && (
-          <div className="preview">
-            <img src={image} alt="preview" />
-            <p className="description">{description}</p>
+      {images.length > 0 ? (
+        images.map((img) => (
+          <div key={img.id} className="image-card">
+            <img src={img.url} alt={img.name} />
+            <p>{img.name}</p>
           </div>
-        )}
-      </main>
+        ))
+      ) : (
+        <p>No hay imágenes disponibles.</p>
+      )}
     </div>
   );
 };

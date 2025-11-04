@@ -13,7 +13,7 @@ import {
 
 class User extends Model {
     @AllowNull(false)
-    @Unique(true)
+    @Unique(false)
     @Column({
         type: DataType.STRING(50)
     })
